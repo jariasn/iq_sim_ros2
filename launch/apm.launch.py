@@ -1,8 +1,8 @@
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
+from launch.actions import DeclareLaunchArgument
 from launch.substitutions import LaunchConfiguration
+from launch.actions import IncludeLaunchDescription
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch_ros.actions import Node
 from ament_index_python.packages import get_package_share_directory
 import os
 
@@ -16,7 +16,7 @@ def generate_launch_description():
     mavros_ns_arg = DeclareLaunchArgument('mavros_ns', default_value='/mavros')
     
     config_yaml_path = os.path.join(
-        get_package_share_directory('iq_sim_ros2'),
+        get_package_share_directory('iq_sim'),
         'launch', 'mavros_param.yaml'
     )
     config_yaml_arg = DeclareLaunchArgument('config_yaml', default_value=config_yaml_path)
@@ -28,22 +28,21 @@ def generate_launch_description():
 
     plugin_yaml_arg = DeclareLaunchArgument('plugin_yaml', default_value=plugin_yaml_path)
 
-    # Include mavros_node launch
-    mavros_launch = Node(
-        package='mavros',
-        executable='mavros_node',
-        namespace=LaunchConfiguration('mavros_ns'),
-        output=LaunchConfiguration('log_output'),
-        respawn=LaunchConfiguration('respawn_mavros'),
-        parameters=[
-            config_yaml_path,
-            plugin_yaml_path,
-            {'fcu_url': LaunchConfiguration('fcu_url')},
-            {'gcs_url': LaunchConfiguration('gcs_url')},
-            {'target_system_id': LaunchConfiguration('tgt_system')},
-            {'target_component_id': LaunchConfiguration('tgt_component')},
-        ],
-        arguments=['--ros-args', '--log-level', 'INFO']
+    mavros_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            os.path.join(get_package_share_directory('iq_sim'), "launch", "mavros_node.launch.py")
+        ),
+        launch_arguments={
+            'pluginlists_yaml': plugin_yaml_path,
+            'config_yaml': config_yaml_path,
+            'fcu_url': LaunchConfiguration('fcu_url'),
+            'gcs_url': LaunchConfiguration('gcs_url'),
+            'mavros_ns': LaunchConfiguration('mavros_ns'),
+            'tgt_system': LaunchConfiguration('tgt_system'),
+            'tgt_component': LaunchConfiguration('tgt_component'),
+            'log_output': LaunchConfiguration('log_output'),
+            'respawn_mavros': LaunchConfiguration('respawn_mavros'),
+        }.items()
     )
     
     return LaunchDescription([

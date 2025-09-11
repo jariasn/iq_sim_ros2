@@ -7,11 +7,10 @@ import os
 
 def generate_launch_description():
     return LaunchDescription([
-        # Set model paths - YOUR models first for priority
         SetEnvironmentVariable(
             'GAZEBO_MODEL_PATH',
             [
-                PathJoinSubstitution([FindPackageShare('iq_sim_ros2'), 'models']),
+                PathJoinSubstitution([FindPackageShare('iq_sim'), 'models']),
                 ':',
                 EnvironmentVariable('GAZEBO_MODEL_PATH', default_value=''),
                 ':',
@@ -19,7 +18,6 @@ def generate_launch_description():
             ]
         ),
         
-        # CRITICAL: Set ArduPilot plugin path
         SetEnvironmentVariable(
             'GAZEBO_PLUGIN_PATH',
             [
@@ -29,7 +27,6 @@ def generate_launch_description():
             ]
         ),
         
-        # Disable online model downloads
         SetEnvironmentVariable('GAZEBO_MODEL_DATABASE_URI', ''),
         
         IncludeLaunchDescription(
@@ -41,7 +38,7 @@ def generate_launch_description():
                 ])
             ),
             launch_arguments=[
-                ('world', PathJoinSubstitution([FindPackageShare('iq_sim_ros2'), 'worlds', 'runway.world']))
+                ('world', PathJoinSubstitution([FindPackageShare('iq_sim'), 'worlds', 'runway.world']))
             ]
         )
     ])
