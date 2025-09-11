@@ -61,10 +61,13 @@
             <stddev>0.01</stddev>
           </noise> -->
         </ray>
-        <plugin name="hokuyo_node" filename="libgazebo_ros_laser.so">
-          <robotNamespace></robotNamespace>
-          <topicName>/spur/laser/scan</topicName>
-          <frameName>/hokuyo_sensor_link</frameName>
+        <plugin name="hokuyo_node" filename="libgazebo_ros_ray_sensor.so">
+          <ros>
+                <namespace>iris</namespace>
+                <remapping>~/out:=laser_scan</remapping>
+          </ros>
+          <output_type>sensor_msgs/LaserScan</output_type>
+          <frameName>hokuyo_sensor_link</frameName>
         </plugin>
       </sensor>
     </link>
