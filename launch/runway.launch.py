@@ -10,7 +10,7 @@ def generate_launch_description():
         SetEnvironmentVariable(
             'GAZEBO_MODEL_PATH',
             [
-                PathJoinSubstitution([FindPackageShare('iq_sim'), 'models']),
+                PathJoinSubstitution([FindPackageShare('iq_sim_ros2'), 'models']),
                 ':',
                 EnvironmentVariable('GAZEBO_MODEL_PATH', default_value=''),
                 ':',
@@ -38,7 +38,7 @@ def generate_launch_description():
                 ])
             ),
             launch_arguments=[
-                ('world', PathJoinSubstitution([FindPackageShare('iq_sim'), 'worlds', 'runway.world']))
+                ('world', PathJoinSubstitution([FindPackageShare('iq_sim_ros2'), 'worlds', 'runway.world']))
             ]
         )
     ])
